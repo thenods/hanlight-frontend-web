@@ -7,7 +7,7 @@ import {
   boardActions,
   boardReducerActions,
   OptionData,
-  UserModel,
+  UserState,
 } from 'store';
 import { BlueTxt, OptionBox, RedTxt } from '../boardOption.component';
 
@@ -20,7 +20,7 @@ const CommentOptionComponent: React.FC<CommentOptionProps> = ({
 }) => {
   const dispatch: Dispatch<boardReducerActions> = useDispatch();
 
-  const { accessToken } = useSelector<AppState, UserModel>(state => state.user);
+  const { accessToken } = useSelector<AppState, UserState>(state => state.user);
 
   const {
     optionToggle,

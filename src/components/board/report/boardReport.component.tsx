@@ -10,7 +10,7 @@ import {
   BoardModel,
   boardReducerActions,
   ErrorModel,
-  UserModel,
+  UserState,
 } from 'store';
 import styled from 'styled-components';
 
@@ -165,7 +165,7 @@ const Form = styled.form`
 const BoardReportComponent: React.FC = () => {
   const dispatch: Dispatch<boardReducerActions> = useDispatch();
 
-  const { accessToken } = useSelector<AppState, UserModel>(state => state.user);
+  const { accessToken } = useSelector<AppState, UserState>(state => state.user);
   const { optionData } = useSelector<AppState, BoardModel>(
     state => state.board,
   );

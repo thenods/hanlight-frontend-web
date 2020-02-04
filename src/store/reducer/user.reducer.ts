@@ -1,10 +1,13 @@
 import { produce } from 'immer';
 import { userReducerActions } from '../action';
-import { UserModel } from '../model/user.model';
+import { UserState, UserType } from '../model/user.model';
+import { APIStatus, APIStatusWithBoolean } from 'store/model';
 
 declare global {
   interface Window {
-    android: any;
+    android: {
+      logout(): void;
+    }
   }
 }
 
@@ -12,11 +15,11 @@ window.android = {
   logout: () => console.log('logout'),
 };
 
-const initialState: UserModel = {
+const initialState: UserState = {
   signKey: '',
   id: '',
   accessToken: '',
-  type: 'none',
+  type: UserType.NONE,
   admin: 0,
   name: '',
   major: null,
@@ -25,32 +28,32 @@ const initialState: UserModel = {
   studentNum: null,
   image: null,
 
-  verifyPhoneStatus: 'none',
-  registerStatus: 'none',
-  loginStatus: 'none',
-  idRecoveryStatus: 'none',
-  pwRecoveryStatus: 'none',
-  idExistStatus: 'none',
-  tpExistStatus: 'none',
-  signKeyExistStatus: 'none',
-  getUserStatus: 'none',
-  patchPasswordStatus: 'none',
-  patchPhoneStatus: 'none',
-  postUserImgStatus: 'none',
+  verifyPhoneStatus: APIStatus.NONE,
+  registerStatus: APIStatus.NONE,
+  loginStatus: APIStatus.NONE,
+  idRecoveryStatus: APIStatus.NONE,
+  pwRecoveryStatus: APIStatus.NONE,
+  idExistStatus: APIStatusWithBoolean.NONE,
+  tpExistStatus: APIStatusWithBoolean.NONE,
+  signKeyExistStatus: APIStatusWithBoolean.NONE,
+  getUserStatus: APIStatus.NONE,
+  patchPasswordStatus: APIStatus.NONE,
+  patchPhoneStatus: APIStatus.NONE,
+  postUserImgStatus: APIStatus.NONE,
 };
 
 export const userReducer = (
-  state: UserModel = initialState,
+  state: UserState = initialState,
   action: userReducerActions,
 ) =>
   produce(state, draft => {
     switch (action.type) {
       case 'LOGIN':
-        draft.loginStatus = 'pending';
+        draft.loginStatus = APIStatus.PENDING;
         break;
 
       case 'LOGIN_SUCCESS':
-        draft.loginStatus = 'success';
+        draft.loginStatus = APIStatus.SUCCESS;
         draft.accessToken = action.payload.accessToken;
         Object.assign(draft, {
           ...action.payload.user,
@@ -60,57 +63,57 @@ export const userReducer = (
         break;
 
       case 'LOGIN_FAILURE':
-        draft.loginStatus = 'failure';
+        draft.loginStatus = APIStatus.FAILURE;
         break;
 
       case 'ID_RECOVERY':
-        draft.idRecoveryStatus = 'pending';
+        draft.idRecoveryStatus = APIStatus.PENDING;
         break;
 
       case 'ID_RECOVERY_SUCCESS':
-        draft.idRecoveryStatus = 'success';
+        draft.idRecoveryStatus = APIStatus.SUCCESS;
         draft.id = action.payload.id;
         break;
 
       case 'ID_RECOVERY_FAILURE':
-        draft.idRecoveryStatus = 'failure';
+        draft.idRecoveryStatus = APIStatus.FAILURE;
         break;
 
       case 'PW_RECOVERY':
-        draft.pwRecoveryStatus = 'pending';
+        draft.pwRecoveryStatus = APIStatus.PENDING;
         break;
 
       case 'PW_RECOVERY_SUCCESS':
-        draft.pwRecoveryStatus = 'success';
+        draft.pwRecoveryStatus = APIStatus.SUCCESS;
         draft.accessToken = action.payload.accessToken;
         break;
 
       case 'PW_RECOVERY_FAILURE':
-        draft.pwRecoveryStatus = 'failure';
+        draft.pwRecoveryStatus = APIStatus.FAILURE;
         break;
 
       case 'VERIFY_PHONE':
-        draft.verifyPhoneStatus = 'pending';
+        draft.verifyPhoneStatus = APIStatus.PENDING;
         break;
 
       case 'VERIFY_PHONE_SUCCESS':
-        draft.verifyPhoneStatus = 'success';
+        draft.verifyPhoneStatus = APIStatus.SUCCESS;
         break;
 
       case 'VERIFY_PHONE_FAILURE':
-        draft.verifyPhoneStatus = 'failure';
+        draft.verifyPhoneStatus = APIStatus.FAILURE;
         break;
 
       case 'REGISTER':
-        draft.registerStatus = 'pending';
+        draft.registerStatus = APIStatus.PENDING;
         break;
 
       case 'REGISTER_SUCCESS':
-        draft.registerStatus = 'success';
+        draft.registerStatus = APIStatus.SUCCESS;
         break;
 
       case 'REGISTER_FAILURE':
-        draft.registerStatus = 'failure';
+        draft.registerStatus = APIStatus.FAILURE;
         break;
 
       case 'SET_SIGN_KEY':
@@ -118,18 +121,18 @@ export const userReducer = (
         break;
 
       case 'ID_EXIST':
-        draft.idExistStatus = 'pending';
+        draft.idExistStatus = APIStatusWithBoolean.PENDING;
         break;
 
       case 'ID_EXIST_SUCCESS_TRUE':
-        draft.idExistStatus = 'success-true';
+        draft.idExistStatus = APIStatusWithBoolean.SUCCESS_TRUE;
         break;
       case 'ID_EXIST_SUCCESS_FALSE':
-        draft.idExistStatus = 'success-false';
+        draft.idExistStatus = APIStatusWithBoolean.SUCCESS_FALSE;
         break;
 
       case 'ID_EXIST_FAILURE':
-        draft.idExistStatus = 'failure';
+        draft.idExistStatus = APIStatusWithBoolean.FAILURE;
         break;
 
       case 'RESET_USER':
@@ -138,54 +141,54 @@ export const userReducer = (
         return initialState;
 
       case 'GET_USER':
-        draft.getUserStatus = 'pending';
-        draft.loginStatus = 'pending';
+        draft.getUserStatus = APIStatus.PENDING;
+        draft.loginStatus = APIStatus.PENDING;
         break;
       case 'GET_USER_SUCCESS':
-        draft.getUserStatus = 'success';
-        draft.loginStatus = 'success';
+        draft.getUserStatus = APIStatus.SUCCESS;
+        draft.loginStatus = APIStatus.SUCCESS;
         Object.assign(draft, {
           ...action.payload.user,
         });
         draft.accessToken = action.payload.token;
         break;
       case 'GET_USER_FAILURE':
-        draft.getUserStatus = 'failure';
-        draft.loginStatus = 'failure';
+        draft.getUserStatus = APIStatus.FAILURE;
+        draft.loginStatus = APIStatus.FAILURE;
         localStorage.clear();
         break;
 
       case 'PATCH_PASSWORD':
-        draft.patchPasswordStatus = 'pending';
+        draft.patchPasswordStatus = APIStatus.PENDING;
         break;
       case 'PATCH_PASSWORD_SUCCESS':
-        draft.patchPasswordStatus = 'success';
+        draft.patchPasswordStatus = APIStatus.SUCCESS;
         break;
       case 'PATCH_PASSWORD_FAILURE':
-        draft.patchPasswordStatus = 'failure';
+        draft.patchPasswordStatus = APIStatus.FAILURE;
         break;
 
       case 'PATCH_PHONE':
-        draft.patchPhoneStatus = 'pending';
+        draft.patchPhoneStatus = APIStatus.PENDING;
         break;
       case 'PATCH_PHONE_SUCCESS':
-        draft.patchPhoneStatus = 'success';
+        draft.patchPhoneStatus = APIStatus.SUCCESS;
         break;
       case 'PATCH_PHONE_FAILURE':
-        draft.patchPhoneStatus = 'failure';
+        draft.patchPhoneStatus = APIStatus.FAILURE;
         break;
 
       case 'POST_USER_IMG':
-        draft.postUserImgStatus = 'pending';
+        draft.postUserImgStatus = APIStatus.PENDING;
         break;
 
       case 'POST_USER_IMG_SUCCESS':
-        draft.postUserImgStatus = 'success';
+        draft.postUserImgStatus = APIStatus.SUCCESS;
         draft.image = action.payload.user.image;
         break;
 
       case 'POST_USER_IMG_FAILURE':
-        draft.postUserImgStatus = 'failure';
+        draft.postUserImgStatus = APIStatus.FAILURE;
         break;
 
       default:

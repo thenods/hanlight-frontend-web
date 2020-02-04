@@ -11,7 +11,7 @@ import {
   BoardModel,
   boardReducerActions,
   ErrorModel,
-  UserModel,
+  UserState,
 } from 'store';
 import styled, { css } from 'styled-components';
 
@@ -205,7 +205,7 @@ const FeedEditComponent: React.FC = () => {
   const { message: errorMesage } = useSelector<AppState, ErrorModel>(
     state => state.error,
   );
-  const { accessToken, image } = useSelector<AppState, UserModel>(
+  const { accessToken, image } = useSelector<AppState, UserState>(
     state => state.user,
   );
 

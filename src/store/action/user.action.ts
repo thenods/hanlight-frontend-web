@@ -1,6 +1,7 @@
 import { Action } from 'redux';
-import { ErrorResponse } from 'store/model';
+import { ErrorResponse, User, RestrictedUser } from 'store/model';
 import { createStandardAction } from 'typesafe-actions';
+import { Facebook } from 'types/types';
 
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -49,17 +50,17 @@ export const POST_USER_IMG_SUCCESS = 'POST_USER_IMG_SUCCESS';
 export const POST_USER_IMG_FAILURE = 'POST_USER_IMG_FAILURE';
 
 export interface LoginParam {
-  id: string;
-  password: string;
+  id: User['id'];
+  password: User['password'];
 }
 
 export interface IdRecoveryParam {
-  code: string;
+  code: Facebook['code'];
 }
 
 export interface PwRecoveryParam {
-  code: string;
-  id: string;
+  id: User['id'];
+  code: Facebook['code'];
 }
 
 export interface ExistParam {
@@ -71,43 +72,33 @@ export interface ExistResponse {
 }
 
 export interface VerifyPhoneParam {
-  code: string;
-  signKey: string;
+  signKey: User['signKey'];
+  code: Facebook['code'];
 }
 
 export interface RegisterParam {
-  id: string;
-  password: string;
-  signKey: string;
+  id: User['id'];
+  password: User['password'];
+  signKey: User['signKey'];
 }
 
 export interface PatchPwParam {
-  accessToken: string;
-  password: string;
+  accessToken: User['accessToken'];
+  password: User['password'];
 }
 
 export interface PatchPhoneParam {
-  accessToken: string;
-  code: string;
+  accessToken: User['accessToken'];
+  code: Facebook['code'];
 }
 
 export interface PostUserImgParmas {
-  accessToken: string;
+  accessToken: User['accessToken'];
   file: File;
 }
 
 export interface PostUserImgResType {
-  user: {
-    type: 'none' | 'student' | 'teacher' | 'graduate' | 'parent';
-    admin: number;
-    name: string;
-    id: string;
-    major: string | null;
-    grade: number | null;
-    classNum: number | null;
-    studentNum: number | null;
-    image: string;
-  };
+  user: RestrictedUser;
 }
 
 export class Login implements Action {
@@ -121,18 +112,8 @@ export class LoginSuccess implements Action {
 
   public constructor(
     public payload: {
-      accessToken: string;
-      user: {
-        id: string;
-        type: 'none' | 'student' | 'teacher' | 'graduate' | 'parent';
-        admin: number;
-        name: string;
-        major: string | null;
-        grade: number | null;
-        classNum: number | null;
-        studentNum: number | null;
-        image: string | null;
-      };
+      accessToken: User['accessToken'];
+      user: RestrictedUser;
     },
   ) {}
 }
@@ -150,7 +131,7 @@ export class IdRecovery implements Action {
 export class IdRecoverySuccess implements Action {
   public readonly type = ID_RECOVERY_SUCCESS;
 
-  public constructor(public payload: { id: string }) {}
+  public constructor(public payload: { id: User['id'] }) {}
 }
 
 export class IdRecoveryFailure implements Action {
@@ -169,7 +150,7 @@ export class PwRecoverySuccess implements Action {
   public readonly type = PW_RECOVERY_SUCCESS;
 
   public constructor(
-    public payload: { success: boolean; accessToken: string },
+    public payload: { success: boolean; accessToken: User['accessToken'] },
   ) {}
 }
 
@@ -264,18 +245,8 @@ export class GetUserSuccess implements Action {
 
   public constructor(
     public payload: {
-      token: string;
-      user: {
-        id: string;
-        type: 'none' | 'student' | 'teacher' | 'graduate' | 'parent';
-        admin: number;
-        name: string;
-        major: string | null;
-        grade: number | null;
-        classNum: number | null;
-        studentNum: number | null;
-        image: string | null;
-      };
+      token: User['accessToken'];
+      user: RestrictedUser;
     },
   ) {}
 }

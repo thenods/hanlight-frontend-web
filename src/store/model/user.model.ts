@@ -1,8 +1,19 @@
-export interface UserModel {
+import { APIStatus, APIStatusWithBoolean } from '.';
+
+export enum UserType {
+  NONE = 'none',
+  STUDENT = 'student',
+  TEACHER = 'teacher',
+  GRADUATE = 'graduate',
+  PARENT = 'parent',
+}
+
+export interface User {
   id: string;
+  password: string;
   signKey: string;
   accessToken: string;
-  type: 'none' | 'student' | 'teacher' | 'graduate' | 'parent';
+  type: UserType;
   admin: number;
   name: string;
   major: string | null;
@@ -10,32 +21,22 @@ export interface UserModel {
   classNum: number | null;
   studentNum: number | null;
   image: string | null;
-
-  verifyPhoneStatus: 'none' | 'pending' | 'success' | 'failure';
-  registerStatus: 'none' | 'pending' | 'success' | 'failure';
-  loginStatus: 'none' | 'pending' | 'success' | 'failure';
-  idRecoveryStatus: 'none' | 'pending' | 'success' | 'failure';
-  pwRecoveryStatus: 'none' | 'pending' | 'success' | 'failure';
-  idExistStatus:
-    | 'none'
-    | 'pending'
-    | 'success-true'
-    | 'success-false'
-    | 'failure';
-  tpExistStatus:
-    | 'none'
-    | 'pending'
-    | 'success-true'
-    | 'success-false'
-    | 'failure';
-  signKeyExistStatus:
-    | 'none'
-    | 'pending'
-    | 'success-true'
-    | 'success-false'
-    | 'failure';
-  getUserStatus: 'none' | 'pending' | 'success' | 'failure';
-  patchPasswordStatus: 'none' | 'pending' | 'success' | 'failure';
-  patchPhoneStatus: 'none' | 'pending' | 'success' | 'failure';
-  postUserImgStatus: 'none' | 'pending' | 'success' | 'failure';
 }
+
+interface UserAPIStatus {
+  verifyPhoneStatus: APIStatus;
+  registerStatus: APIStatus;
+  loginStatus: APIStatus;
+  idRecoveryStatus: APIStatus;
+  pwRecoveryStatus: APIStatus;
+  idExistStatus: APIStatusWithBoolean;
+  tpExistStatus: APIStatusWithBoolean;
+  signKeyExistStatus: APIStatusWithBoolean;
+  getUserStatus: APIStatus;
+  patchPasswordStatus: APIStatus;
+  patchPhoneStatus: APIStatus;
+  postUserImgStatus: APIStatus;
+}
+
+export type RestrictedUser = Omit<User, 'password' | 'signKey' | 'accessToken'>
+export type UserState = Omit<User, 'password'> & UserAPIStatus;
